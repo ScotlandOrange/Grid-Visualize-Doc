@@ -175,6 +175,9 @@ vtkStructuredGrid
 
 ### 4.2.3. LOD 创建
 
+### Geometry Properties
+- 设置面颜色
+
 ## 4.3. 场景组织
 使用SceneGraph组织
 
