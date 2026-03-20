@@ -327,7 +327,7 @@ mySegmentKey.GetSubwindowControl().SetRenderingAlgorithm(HPS::Subwindow::Renderi
 mySegmentKey.GetHiddenLineAttributeControl().SetVisibility(false);
 ```
 
-- 透明
+- 透明 [wenyu]
 
 - Texturess
 - Applying Material
@@ -499,7 +499,7 @@ myWindow.Update(Window::UpdateType::Complete); //强制全量更新
 myWindow.Update(Window::UpdateType::Default, 0.75);//控制重绘时间在0.75秒
 ```
 
-## 10.3. 离屏绘制
+## 10.3. 离屏绘制 [wenyu]
 - 窗口搭建
 ```c++
 //TODO
@@ -512,17 +512,18 @@ myWindow.Update(Window::UpdateType::Default, 0.75);//控制重绘时间在0.75�
 # 11. Rendering Effect
 > https://docs.techsoft3d.com/hoops/visualize-desktop/prog_guide/prog_guide_08_index.html
 
-- Anti-Aliasing
+- Anti-Aliasing [wenyu]
 - Shadow
   - Simple Shadow #投影到单一平面
   - Shadow Map
-- Ambient Occlusion
+- Ambient Occlusion [wenyu]
 - Reflection Planes
 - Bloom
 - 光照算法
   - Gouraud, Phong, Flat, Hemispheric Ambient Lighting
 
 
+## RHI [wenyu主要负责]
 
 # 12. Performance Guarantee
 ## 12.1. Fixed Framerate
