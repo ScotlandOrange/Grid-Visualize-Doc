@@ -66,7 +66,7 @@ flowchart TD
 - Renedring Effects
 
 
-# 功能组件文档章节框架
+# 3. 功能组件文档章节框架
 1. [目的]
 2. [如何使用]，flowchart + sample/face code
 3. [性能保证], 可能性以及处理方式
@@ -75,9 +75,9 @@ flowchart TD
 4. [实现细节]内部工作细节流程，业务层不关心此部分。
 
 
-# 3. Geometry
+# 4. Geometry
 
-## 3.1. Entity 体系
+## 4.1. Entity 体系
 一个3D场景下可被渲染处理的几何网格对象
 
 - 支持自定义继承拓展
@@ -106,7 +106,7 @@ flowchart TD
 	```
 
 
-## 3.2. 数据映射层 (Mapper)
+## 4.2. 数据映射层 (Mapper)
 映射CAE数据对象-->Entity可视化对象。
 > 类似`vtkDataObject -> vtkAlgorithm -> vtkMapper -> vtkActor/vtkVolume`
 
@@ -152,10 +152,10 @@ classDiagram
 - `vtkGPUVolumeRayCastMapper` # 用于规则体数据的 GPU 体渲染。
 - `vtkUnstructuredGridVolumeMapper`。 # 用于非结构体网格的体渲染。
 
-### 3.2.1. CAE DataType
+### 4.2.1. CAE DataType
 //TODO: Operation层的DataType
 
-### 3.2.2. 映射过程
+### 4.2.2. 映射过程
 //TODO：这里列出如何把单一多边形几何，混合多边形几何，..., 组装成 子类`Entity`。
 类似如下，并附上伪代码或者flowchart
 ```
@@ -173,8 +173,9 @@ vtkStructuredGrid
 -> vtkActor
 ```
 
+### 4.2.3. LOD 创建
 
-## 3.3. 场景组织
+## 4.3. 场景组织
 使用SceneGraph组织
 
 //TODO:这个图晚点修正
@@ -198,9 +199,9 @@ Scene
 - `Geometry`、`ResultData`、`DisplayStyle`、`Transform` 和 `SelectionId / Metadata` 是三类引擎中都稳定存在、且会直接暴露给 CAE 开发者操作的数据。
 
 
-# 4. Viewing
+# 5. Viewing
 
-## 4.1. View Hierarchy
+## 5.1. View Hierarchy
 > From Hoops `https://docs.techsoft3d.com/hps/2025.5.0/prog_guide/0301_core.html`
 
 呈现一个有组织的画面层级，`View`维护自己的相机、可见性、裁剪、显示模式与绘制优先级。
@@ -208,7 +209,7 @@ Scene
 ![alt text](image.png)
 
 
-### 4.1.1. 组合示例
+### 5.1.1. 组合示例
 ```c++
 HPS::Canvas canvas = HPS::Factory::CreateCanvas(windowKey);
 HPS::Layout layout = HPS::Factory::CreateLayout();
@@ -227,7 +228,7 @@ view1.AttachModel(model);
 view2.AttachModel(model);
 ```
 
-### 4.1.2. 画面更新怎么做
+### 5.1.2. 画面更新怎么做
 //TODO::Hoops中，如果需要更新画面了，接口怎么调用，c++接口代码或者伪代码
 ```c++
 // 更新几何数据
@@ -247,14 +248,14 @@ view.Update();
 canvas.Update();
 ```
 
-### 4.1.3. 性能优化
+### 5.1.3. 性能优化
 View Hierarchy模块在Fixed Framerate需要做的
 - 画面更新分层组装，避免整个窗口全量重建，`Canvas 窗口级刷新 -> Layout多视口分区 -> View 显示状态-> Model模型`，只重绘脏掉的 view、只更新受影响的子区域。
 - 在预算快耗尽时优先提交各个 view 的基础结果，延帧绘制高耗时渲染任务。
 - View之间共享model层数据。
 
 
-## 4.2. 坐标系
+## 5.2. 坐标系
 > https://docs.techsoft3d.com/hoops/visualize-desktop/prog_guide/0302_coordinate_systems.html#
 - 模型空间
 - 世界空间
@@ -262,17 +263,17 @@ View Hierarchy模块在Fixed Framerate需要做的
 - 像素空间
 - 坐标转换
 
-## 4.3. 相机(Camera) 
+## 5.3. 相机(Camera) 
 - 视锥体控制，正交透视， 近远平面自适应
 - 相机姿态控制
 - 相机轨道，环绕
 
 
-## 4.4. 子窗口
+## 5.4. 子窗口
 > https://docs.techsoft3d.com/hoops/visualize-desktop/prog_guide/0304_subwindows.html#lightweight-subwindow-features-and-limitations
 ![alt text](image-2.png)
 
-## 4.5. 裁切 (Clip Region)
+## 5.5. 裁切 (Clip Region)
 效果描述：通过一个二维多边形的切割面把几何体切成两部分，分别控制两部分的可见性
 ![alt text](image-1.png)
 
@@ -282,13 +283,13 @@ View Hierarchy模块在Fixed Framerate需要做的
 ```
 
 
-## 4.6. 画面自适应 (AutoFit)
+## 5.6. 画面自适应 (AutoFit)
 全局模型自动适应画面
 > https://docs.techsoft3d.com/hps/2025.5.0/prog_guide/0301_core.html#fitworld
 
 
 
-# 5. 共享资源池
+# 6. 共享资源池
 > https://docs.techsoft3d.com/hoops/visualize-desktop/prog_guide/0401_portfolios_introduction.html
 
 实现材质组合的复用，以key-value的形式查询使用
@@ -304,13 +305,15 @@ View Hierarchy模块在Fixed Framerate需要做的
 //使用代码
 ```
 
-# 6. 材质 (Materials)
+# 7. 材质 (Materials)
 材质是一组用于装饰几何体的参数设置集合。材质由一系列渲染效果的组件构成。这些组件的例子包括漫反射通道、发光、凹凸、光泽度和透射。每个材质至少包含一个组件：基础颜色。
 ```c++
 //创建一个材质Code
 ```
 
-## Material Properties
+## 7.1. IO文件格式读取材质
+
+## 7.2. Material Properties
 - Hidden Line Removal
 
 ![alt text](image-7.png)
@@ -321,16 +324,17 @@ mySegmentKey.GetSubwindowControl().SetRenderingAlgorithm(HPS::Subwindow::Renderi
 mySegmentKey.GetHiddenLineAttributeControl().SetVisibility(false);
 ```
 
+- 透明
 
 - Texturess
 - Applying Material
 
 - PBR
-## 6.1. 材质数据流
+## 7.3. 材质数据流
 //这里为材质内部数据流细节描述
 
 
-# 7. User Interaction
+# 8. User Interaction
 > https://docs.techsoft3d.com/hoops/visualize-desktop/prog_guide/0601_standard_operators.html
 
 使用一族pre-build小组件处理类似缩放、平移、旋转行为，也可以拓展能力实现自定义的操作目的，主要分为以下几类  
@@ -341,7 +345,7 @@ mySegmentKey.GetHiddenLineAttributeControl().SetVisibility(false);
 - 杂项组件(Miscellaneous)
 各个交互小组件需要考虑画面更新的策略
 
-### 7.0.1. 核心结构
+### 8.0.1. 核心结构
 //Todo:以下为Hoops实例Operator UML, 替换成ZFGrid's 交互系统UML
 ```mermaid
 classDiagram
@@ -372,7 +376,7 @@ classDiagram
     Operator --> View : 作用于视图状态
 ```
 
-### 7.0.2. 运行流程
+### 8.0.2. 运行流程
 //Todo:以下为Hoops实例Operator Sequence, 替换成ZFGrid's 交互系统Sequence
 ```mermaid
 sequenceDiagram
@@ -397,13 +401,13 @@ sequenceDiagram
     V-->>U: 返回新的画面反馈
 ```
 
-### 7.0.3. 交互拓展形式
+### 8.0.3. 交互拓展形式
 //TODO: 换成ZFGrid的拓展形式
 - 组合标准 Operator：直接 `Push/Set` 标准能力（Orbit/Pan/Zoom/Select/Highlight）。
 - 继承 `Operator`：实现业务输入逻辑，返回 `true/false` 控制事件传播。
 - 继承标准 Operator：复用已有行为，再补充你的业务动作。
 
-### 7.0.4. 创建交互组件和使用示例
+### 8.0.4. 创建交互组件和使用示例
 //TODO
 ```c++
 auto oc = view.GetOperatorControl();
@@ -414,20 +418,20 @@ oc.Push(std::make_shared<HPS::HighlightOperator>(
     HPS::Operator::Priority::High); // Ctrl+左键高优先级高亮
 ```
 
-## 7.1. 导航Cube(Axis Triad and Navigation Cube)
+## 8.1. 导航Cube(Axis Triad and Navigation Cube)
 > https://docs.techsoft3d.com/hps/2025.5.0/prog_guide/0301_core.html#enabling-the-axis-triad-and-navigation-cube
 右上角的方向导航方块
 
-## 7.2. 选择模块
+## 8.2. 选择模块
 一个全局单例的选择系统，后台内置一个当前选中结果的全局状态机
 //TODO: 待完善该章节
 
-## 7.3. 高亮模块
+## 8.3. 高亮模块
 - 高亮逻辑模块
 //ToDO:基于ZFGrid完善当前接口文档
 
 
-## 7.4. OverLay显示
+## 8.4. OverLay显示
 > https://docs.techsoft3d.com/hoops/visualize-desktop/prog_guide/0605_overlays.html
 属于将突出显示的几何独立绘制，避免全场景重绘。常见有以下三种模式：
 
@@ -437,9 +441,9 @@ oc.Push(std::make_shared<HPS::HighlightOperator>(
 | 始终显示在最上层。 | 保留深度测试，更接近真实遮挡关系。 | 选中物体的同时，便于观察内部结构。 |
 
 
-# 8. Rendering
+# 9. Rendering
 
-# 9. 渲染管线
+## 9.1. 渲染管线
 //TODO: OnGoing
 ```mermaid
 flowchart TD
@@ -481,7 +485,7 @@ flowchart TD
 	PipelineNode --> Pass
 ```
 
-## 9.1. 画面更新
+## 9.2. 画面更新
 - View Hierarchy模块负责绘制更新
 - User Interaction 的子模块各自负责画面刷新策略
 - 画面更新结束信号
@@ -492,7 +496,7 @@ myWindow.Update(Window::UpdateType::Complete); //强制全量更新
 myWindow.Update(Window::UpdateType::Default, 0.75);//控制重绘时间在0.75秒
 ```
 
-## 9.2. 离屏绘制
+## 9.3. 离屏绘制
 - 窗口搭建
 ```c++
 //TODO
@@ -514,7 +518,7 @@ myWindow.Update(Window::UpdateType::Default, 0.75);//控制重绘时间在0.75�
 - Bloom
 - 光照算法
   - Gouraud, Phong, Flat, Hemispheric Ambient Lighting
-- 
+
 
 
 # 11. Performance Guarantee
@@ -527,27 +531,9 @@ View方面：按优先级处理渲染任务，限制渲染管线运行上限时�
 - 一旦接近本帧 deadline，就立即停止剩余工作并直接提交当前结果，下一帧再续做。
 - 尽量复用上一帧可见集、裁剪结果和 GPU 资源，避免每帧全量重建
 
-## 裁剪系统
+## 11.2. 裁剪系统
 - SceneGraph 包围球 Frustum Culling
 - //TODO:逐渐补充
 
-# 12. 附录
-
-- 后续工作TODOs
-- 透明完善
-- Mesh挂载的材质支持切换，实现透明，填充模式动态修改。该功能负责Gems层填充模式切换的实现
-- 高亮效果优化，对标商业软件。
-- 材质数据读取。
-
-## 12.1. 基础组件
+# 12. 基础组件
 - 内存分配器框架 <--- 隔离new delete和真正内存分配，内存分配器作为独立模块迭代，e.g. 延迟delete, 监控内存泄漏，环形缓冲、内存池、小对象优化，SoA、AoS排布支持
-
-
-## 12.2. 渲染算法持续集成
-- *抗锯齿*
-- PBR
-- *SSAO*
-- postprocess passes
-- LOD
-- Culling
-
